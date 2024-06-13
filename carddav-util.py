@@ -65,8 +65,8 @@ def fixFN( url, filename, user, passwd, auth, verify ):
         try:
             dav.update_vcard( c.serialize(), href, etag )
         except Exception as e:
-            print( '' )
-            raise
+            print( e )
+#            raise
     print( '' )
     print( '[i] All updated' )
 
@@ -86,11 +86,19 @@ def download( url, filename, user, passwd, auth, verify ):
 
     curr = 1
     for href, etag in abook.items():
-        print( '\r[i] Fetching', curr, 'of', nCards, )
-        sys.stdout.flush()
-        curr += 1
-        card = dav.get_vcard( href )
-        f.write( card.decode('utf-8') + '\n' )
+        try:
+            print( '\r[i] Fetching', curr, 'of', nCards, )
+            sys.stdout.flush()
+            curr += 1
+            card = dav.get_vcard( href )
+            f.write( card.decode('utf-8') + '\n' )
+        except Exception as e:
+            print("---------------------------------------------------------")
+            print("ERROR")
+            print(e)
+            print(href)
+            print(etag)
+            print("---------------------------------------------------------")
     print( '' )
     f.close()
     print( '[i] All saved to:', filename )
